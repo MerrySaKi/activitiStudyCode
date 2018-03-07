@@ -8,6 +8,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,22 +16,37 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class Test3controller {
 	private static final Logger logger = LoggerFactory.getLogger("Test3controller");
+	// 创建流程引擎
+	@Autowired
+	private ProcessEngine engine;
 
+	// 得到流程存储服务组件
+	@Autowired
+	private	RepositoryService repositoryService;
+
+	// 获取运行时服务组件
+	@Autowired
+	private RuntimeService runtimeService;
+
+	// 获取流程任务组件
+	@Autowired
+	TaskService taskService;
+	
 	// 流程部署第一个demo练习
 	@RequestMapping("/start")
 	@ResponseBody
 	public String startprocess() {
 		// 创建流程引擎
-		ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+		engine = ProcessEngines.getDefaultProcessEngine();
 
 		// 得到流程存储服务组件
-		RepositoryService repositoryService = engine.getRepositoryService();
-	
+		repositoryService = engine.getRepositoryService();
+
 		// 获取运行时服务组件
-		RuntimeService runtimeService = engine.getRuntimeService();
-	
+		runtimeService = engine.getRuntimeService();
+
 		// 获取流程任务组件
-		TaskService taskService = engine.getTaskService();
+		taskService = engine.getTaskService();
 		repositoryService.createDeployment().addClasspathResource("processes/test3.bpmn").deploy();
 		// 启动流程
 		runtimeService.startProcessInstanceByKey("HelloWorld");
@@ -53,7 +69,7 @@ public class Test3controller {
 		taskService.complete(task.getId());
 		task = taskService.createTaskQuery().singleResult();
 		logger.info("流程结束，查询任务：" + task);
-		return "第一个demo运行成功";
+		return "运行成功";
 	}
 
 }
