@@ -77,7 +77,27 @@ public class Test4controller {
     List<Group> datas = identityService.createGroupQuery().list();
     return datas;
   }
-
+  /**
+  * 查询单一字段的测试
+  */
+  @GetMapping("/queryOne")
+  public Map<String, Object> queryOne(@RequestParam(value = "name") String name) {
+    Map<String, Object> map = new HashMap<String, Object>();
+    try {
+      Group datas = identityService.createGroupQuery().groupName(name).singleResult();
+      if (datas != null ) {
+        map.put("msg", "查询成功");
+        map.put("data", datas);
+      } else {
+        map.put("msg", "查询失败");
+        map.put("data", "未查询到相关数据");
+      } 
+    } catch (Exception e) {
+      map.put("msg", "查询失败");
+        map.put("data", "查询失败");
+    }
+    return map;
+  }
   /**
    * 分页查询测试
    * ${params}
