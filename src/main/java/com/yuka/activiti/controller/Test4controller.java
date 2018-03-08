@@ -110,6 +110,21 @@ public class Test4controller {
     List<Group> datas = identityService.createGroupQuery().listPage(firstResult, maxResults);
     return datas;
   }
+  /**
+   * sql原生查询
+   * ${name}
+   * name为"",则返回全部数据，有则返回查询的数据
+   */
+  @GetMapping("/sqlQuery")
+  public Map<String, Object> sqlQuery(@RequestParam(value = "name") String name) {
+     Map<String, Object> map = new HashMap<String, Object>();
+    if (name.equals("")) {
+      map.put("data", identityService.createNativeGroupQuery().sql("select * from ACT_ID_GROUP").list());
+    } else {
+      map.put("data", identityService.createNativeGroupQuery().sql("select * from ACT_ID_GROUP where NAME_ = #{name}").parameter("name", name).list());
+    }
+    return map;
+  }
 
   public void createGroup(IdentityService identityService, String id, String name, String type) {
     Group group = identityService.newGroup(id);
